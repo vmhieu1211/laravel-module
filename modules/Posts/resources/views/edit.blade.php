@@ -23,7 +23,11 @@
         </div>
     @endif
 
-    {!! Form::model($post, ['method' => 'PUT','enctype' => 'multipart/form-data', 'route' => ['posts.update', $post->id]]) !!}
+    {!! Form::model($post, [
+        'method' => 'PUT',
+        'enctype' => 'multipart/form-data',
+        'route' => ['posts.update', $post->id],
+    ]) !!}
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
@@ -49,7 +53,8 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Images:</strong>
-                <input id='imageUpload'type="file" name="images" class="form-control" multiple>
+                <input id='imageUpload' type="file" name="images"
+                    class="form-control"  multiple  value="{{ old('images', $post->images)}}">
             </div>
         </div>
 
@@ -66,12 +71,11 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Publish Date:</strong>
-                {!! Form::date('published_at', null, ['placeholder' => 'Publish Date', 'class' => 'form-control']) !!}
+                {{-- {!! Form::date('published_at', $post->publish, ['placeholder' => 'Publish Date', 'class' => 'form-control']) !!}
+             --}}
+             <input type="date" class="form-control" placeholder="Publish Date" name="published_at" value="{{ old('published_at', $post->published_at) }}">
             </div>
         </div>
-
-
-
         <div id="holder" style="margin-top:15px;max-height:100px;"></div>
 
         <div class="col-xs-12 col-sm-12 col-md-12 text-center">

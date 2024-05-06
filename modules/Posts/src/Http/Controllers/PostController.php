@@ -79,11 +79,12 @@ class PostController extends Controller
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
             ]
         );
+
         $post = Post::findOrFail($id);
+     
         $post->title = $request->title;
         $post->content = $request->content;
-        $post->published_at = $request->published_at;
-        $post->status = $request->status;
+        $post->status = $request->status;          
 
         if ($request->has('images')) {
             $file = $request->file('images');

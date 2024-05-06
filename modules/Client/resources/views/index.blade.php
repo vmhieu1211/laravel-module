@@ -7,9 +7,9 @@
                 <!-- Post content-->
                 <article>
                     <!-- Post header-->
-                    <header class="mb-4">
+                    <h1 class="mb-4">
                         {{ $post->title }}
-                    </header>
+                    </h1>
                     <!-- Preview image figure-->
                     <img class="mb-4"><img class="img-fluid rounded" src="{{ $post->images }}"
                             style="max-width: 150px; margin-bottom: 10px;" class="img img-responsive" /></img>
