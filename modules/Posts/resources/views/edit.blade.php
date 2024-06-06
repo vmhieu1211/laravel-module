@@ -53,15 +53,15 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Images:</strong>
-                <input id='imageUpload' type="file" name="images"
-                    class="form-control"  multiple  value="{{ old('images', $post->images)}}">
+                <input id='imageUpload' type="file" name="images" class="form-control" multiple
+                    value="{{ old('images', $post->images) }}">
             </div>
         </div>
 
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Status:</strong>
-                {!! Form::select('status', ['1' => 'Active', '0' => 'Inactive'], null, [
+                {!! Form::select('status', ['1' => 'Active', '0' => '   Inactive'], null, [
                     'id' => 'status',
                     'class' => 'form-control',
                 ]) !!}
@@ -71,9 +71,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Publish Date:</strong>
-                {{-- {!! Form::date('published_at', $post->publish, ['placeholder' => 'Publish Date', 'class' => 'form-control']) !!}
-             --}}
-             <input type="date" class="form-control" placeholder="Publish Date" name="published_at" value="{{ old('published_at', $post->published_at) }}">
+                {!! Form::date('published_at', $post->publish, ['placeholder' => 'Publish Date', 'class' => 'form-control']) !!}
             </div>
         </div>
         <div id="holder" style="margin-top:15px;max-height:100px;"></div>
