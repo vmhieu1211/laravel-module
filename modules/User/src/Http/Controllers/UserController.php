@@ -44,12 +44,11 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        // $user = User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password),
-        // ]);
-        $user = User::create($request->except('token'));
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
         if ($user) {
             $roles = [];
             if (!empty($request['roles'])) {
@@ -78,7 +77,7 @@ class UserController extends Controller
             }
             if (count($roles) > 0) {
                 $user->syncRoles($roles);
-            }   
+            }
             return response()->json(['status' => 'SUCCESS', 'user' => $user]);
         }
         return response()->json(['status' => 'RESOURCE_NOT_FOUND']);
