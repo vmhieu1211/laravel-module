@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\Permissions\src\Http\Requests;
+namespace Modules\Permissions\src\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -27,18 +27,28 @@ class PermissionRequest extends FormRequest
     {
         return [
             'name' => ['required', 'max:50'],
-            // 'guard_name' => ['required', 'max:50'],
         ];
     }
 
     public function messages()
     {
-        return [];
+        return [
+            'required' => __('validation.rules.required'),
+            'max' => __('validation.rules.max'),
+            'unique' => __('validation.rules.unique'),
+            'integer' => __('validation.rules.integer'),
+            'same' => __('validation.rules.same'),
+            'min' => __('validation.rules.min'),
+            'email' => __('validation.rules.email'),
+            'numeric' => __('validation.rules.numeric'),
+        ];
     }
 
     public function attributes()
     {
-        return [];
+        return [
+            'name' => __('validation.attributes.name'),
+        ];
     }
 
     protected function failedValidation(Validator $validator)

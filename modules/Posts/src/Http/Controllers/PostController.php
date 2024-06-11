@@ -10,23 +10,29 @@ use Modules\Posts\src\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
-    function __construct()
-    {
-        $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index', 'store']]);
-        $this->middleware('permission:post-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:post-edit', ['only' => ['edit', 'update']]);
-    }
+    // function __construct()
+    // {
+    //     $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index', 'store']]);
+    //     $this->middleware('permission:post-create', ['only' => ['create', 'store']]);
+    //     $this->middleware('permission:post-edit', ['only' => ['edit', 'update']]);
+    // }
 
     public function index()
     {
         $posts = Post::paginate(5);
 
-        return view('Posts::index', compact('posts'))->with('i', (request()->input('page', 1) - 1) * 5);
+        return response()->json([
+            'status' => 'Success',
+            'data' => $posts,
+        ], 200);
     }
-
-    public function create()
+    public function show($id)
     {
-        return view('Posts::create');
+        $post = Post::find($id);
+        return response()->json([
+            'status' => 'Success',
+            'data' => $post,
+        ], 200);
     }
 
     public function store(PostRequest $request)
@@ -44,7 +50,7 @@ class PostController extends Controller
             'published_at' => $request->published_at,
             'status' => $request->status,
         ]);
-        $post->author = $user->id;
+        // $post->author = $user->id;
 
         $path = 'storage/uploads/';
         if ($request->hasfile('images')) {
@@ -52,39 +58,30 @@ class PostController extends Controller
             $extenstion = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extenstion;
             $file->move($path, $filename);
+            $post->images = $path . $filename;
         }
-        $post->images = $path . $filename;
         $post->save();
-        return redirect()->route('posts.index')
-            ->with('success', 'Post created successfully.');
-    }
-
-    public function show($id)
-    {
-        $post = Post::find($id);
-        return view('Posts::show', compact('post'));
-    }
-
-    public function edit(Post $post)
-    {
-        return view('Posts::edit', compact('post'));
+        if ($post) {
+            return response()->json(['status' => 'Create Post Success', 'post' => $post]);
+        }
+        return response()->json(['status' => 'Create Post Failure']);
     }
 
     public function update(PostRequest $request, $id)
     {
-        $request->validate(
-            [
-                'title' => 'required',
-                'content' => 'required',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]
-        );
+        // $request->validate(
+        //     [
+        //         'title' => 'required',
+        //         'content' => 'required',
+        //         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        //     ]
+        // );
 
         $post = Post::findOrFail($id);
-     
+
         $post->title = $request->title;
         $post->content = $request->content;
-        $post->status = $request->status;          
+        $post->status = $request->status;
 
         if ($request->has('images')) {
             $file = $request->file('images');
@@ -97,16 +94,24 @@ class PostController extends Controller
             }
         }
         $post->images = $path . $filename;
-
         $post->save();
-        return redirect()->route('posts.index')
-            ->with('success', 'Post updated successfully');
+        if ($post) {
+            return response()->json([
+                'status' => 'Post User Success',
+                'data' => $post,
+            ], 200);
+        }
+        return response()->json(['status' => 'Update Post Failure']);
     }
 
     public function destroy($id)
     {
-        Post::destroy($id);
-        return redirect()->route('posts.index')
-            ->with('success', 'Post deleted successfully');
+        $result = Post::destroy($id);
+        if ($result) {
+            return response()->json([
+                'status' => 'Delete Post Success',
+            ], 200);
+        }
+        return response()->json(['status' => 'User Not Found']);
     }
 }

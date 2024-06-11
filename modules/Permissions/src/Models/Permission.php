@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\Permissions\src\Models;
+namespace Modules\Permissions\src\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Models\Permission as ModelsPermission;
@@ -15,5 +15,4 @@ class Permission extends ModelsPermission
     protected $guarded = [];
 
     protected $fillable = ['name', 'guard_name'];
-
 }

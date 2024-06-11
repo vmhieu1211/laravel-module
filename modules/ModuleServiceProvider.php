@@ -4,14 +4,7 @@ namespace modules;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
-use Modules\Roles\src\Http\Services\RoleService;
-use Modules\Roles\src\Http\Services\RoleServiceInterface;
-use Modules\Roles\src\Repositories\RoleRepository;
-use Modules\Roles\src\Repositories\RoleRepositoryInterface;
-use Modules\User\src\Http\Services\UserService;
-use Modules\User\src\Http\Services\UserServiceInterface;
-use Modules\User\src\Repositories\UserRepository;
-use Modules\User\src\Repositories\UserRepositoryInterface;
+
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -106,18 +99,10 @@ class ModuleServiceProvider extends ServiceProvider
     {
         $modulePath = __DIR__ . '/' . $module . '/';
         //khai báo routes
-        if (File::exists($modulePath . 'routes/web.php')) {
-            $this->loadRoutesFrom($modulePath . 'routes/web.php');
-        }
         if (File::exists($modulePath . 'routes/api.php')) {
             $this->loadRoutesFrom($modulePath . 'routes/api.php');
         }
 
-        // Khai báo views
-        // Gọi view thì ta sử dụng: view('Demo::index'), @extends('Demo::index'), @include('Demo::index')
-        if (File::exists($modulePath . "resources/views")) {
-            $this->loadViewsFrom($modulePath . "resources/views", $module);
-        }
 
         //Khai báo Migrations
         if (File::exists($modulePath . 'migrations')) {
@@ -129,7 +114,6 @@ class ModuleServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($modulePath . 'resources/lang', strtolower($module));
             $this->loadJsonTranslationsFrom($modulePath . 'resources/lang');
         }
-
         //Khai báo helpers
         if (File::exists($modulePath . 'helpers')) {
             $helpers_dir = File::allFiles($modulePath . 'helpers');

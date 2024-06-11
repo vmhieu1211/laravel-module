@@ -9,10 +9,6 @@ use Modules\Auth\src\Http\Requests\AuthRequest;
 
 class AuthController extends Controller
 {
-    public function loginForm()
-    {
-        return view('Auth::login');
-    }
 
     public function login(AuthRequest $request)
     {
@@ -23,14 +19,12 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            if ($user->hasRole('Super Admin') || $user->hasRole('Writer')) {
-                return redirect()->route('layouts.index');
-            } elseif($user->hasRole('User')) {
-               return redirect()->route('client.index'); 
-            }
+            // $user = Auth::user()
+            return response()->json([
+                'email' => 'Login Success'
+            ]);
         } else {
-            return redirect()->route('login')->withErrors([
+            return response()->json([
                 'email' => 'Email or password not correct'
             ]);
         }

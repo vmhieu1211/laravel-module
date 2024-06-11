@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/layouts/index', function () {
-    return view('layouts.index');
-})->name('layouts.index');
+// Route::get('/layouts/index', function () {
+//     return view('layouts.index');
+// })->name('layouts.index');
 
-Route::get('/frontend/index', function () {
-    return view('layouts.frontend');
-})->name('frontend.index');
+// Route::get('/frontend/index', function () {
+//     return view('layouts.frontend');
+// })->name('frontend.index');

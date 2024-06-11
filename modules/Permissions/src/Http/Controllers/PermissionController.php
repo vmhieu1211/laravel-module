@@ -1,91 +1,83 @@
 <?php
 
-namespace modules\Permissions\src\Http\Controllers;
+namespace Modules\Permissions\src\Http\Controllers;
 
+use Modules\Roles\src\Models\Role;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Modules\Permissions\src\Models\Permission;
 use Modules\Permissions\src\Http\Requests\PermissionRequest;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+
+
 
 class PermissionController extends Controller
 {
-    function __construct()
+    // function __construct()
+    // {
+    //     $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete', ['only' => ['index', 'store']]);
+    //     $this->middleware('permission:permission-create', ['only' => ['create', 'store']]);
+    //     $this->middleware('permission:permission-edit', ['only' => ['edit', 'update']]);
+    //     $this->middleware('permission:permission-create', ['only' => ['create']]);
+    // }
+
+
+    public function index()
     {
-        $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete', ['only' => ['index', 'store']]);
-        $this->middleware('permission:permission-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:permission-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:permission-create', ['only' => ['create']]);
-    }
-
-
-    public function index(Request $request)
-    {
-        $permissions = Permission::orderBy('name')->get();
-        return view('Permissions::index', compact('permissions'))
-            ->with('i', ($request->input('page', 1) - 1) * 5);
-    }
-
-    public function create()
-    {
-        $roles = Role::get();
-        $permissions = Permission::get();
-        return view('Permissions::create', compact('permissions', 'roles'));
-    }
-
-    public function store(PermissionRequest $request)
-    {
-        $this->validate($request, [
-            'name' => 'required',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,id',
-
-        ]);
-        $permission = Permission::create(['name' => $request->input('name')]);
-        $permission->syncRoles($request->input('roles'));
-
-        return redirect()->route('permissions.index')
-            ->with('success', 'Permission created successfully');
+        $permissions = Permission::with('roles')->paginate(10);
+        if ($permissions) {
+            return response()->json(['status' => 'SUCCESS', 'permissions' => $permissions], 200);
+        }
     }
 
     public function show($id)
     {
-        $permissions = Permission::find($id);
-        $rolePermissions = $permissions->roles;
-        return view('Permissions::show', compact('permissions', 'rolePermissions'));
-
+        $permission = Permission::with('roles')->find($id);
+        if ($permission) {
+            return response()->json(['status' => 'SUCCESS', 'permission' => $permission], 200);
+        }
     }
 
-    public function edit($id)
+    public function store(PermissionRequest $request)
     {
-        $roles = Role::get();
-        $permission = Permission::find($id);
-        $permissions = Permission::get();
-        $assignedRoles = $permission->roles->pluck('id')->toArray();
-        return view('Permissions::edit', compact('permission', 'roles', 'assignedRoles'));
+        $permission = Permission::create($request->except('token'));
+        if ($permission) {
+            $roles = [];
+            if (!empty($request['roles'])) {
+                $roles = Role::whereIn('id', $request['roles'])->pluck('name')->toArray();
+            }
+            if (count($roles) > 0) {
+                $permission->syncRoles($roles);
+            }
+            return response()->json(['status' => 'SUCCESS', 'permission' => $permission->load('roles')], 200);
+        }
+        return response()->json(['status' => 'RESOURCE_NOT_FOUND'], 200);
     }
 
     public function update(PermissionRequest $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,id',
-
-        ]);
-
         $permission = Permission::find($id);
         $permission->name = $request->input('name');
-        $permission->save();
-        $permission->syncRoles($request->input('roles'));
-        return redirect()->route('permissions.index')
-            ->with('success', 'Permissions updated successfully');
+        if ($permission) {
+            $roles = [];
+            if (!empty($request['roles'])) {
+                $roles = Role::whereIn('id', $request['roles'])->pluck('name')->toArray();
+            }
+            if (count($roles) > 0) {
+                $permission->syncRoles($roles);
+            }
+            return response()->json(['status' => 'SUCCESS', 'permission' => $permission], 200);
+        }
+        return response()->json(['status' => 'RESOURCE_NOT_FOUND'], 200);
     }
 
     public function destroy($id)
     {
-        Permission::destroy($id);
-        return redirect()->route('permissions.index')
-            ->with('success', 'Permissions deleted successfully');
+        $permission = Permission::find($id);
+        if (!$permission) {
+            return response()->json(['status' => 'RESOURCE_NOT_FOUND']);
+        }
+        $result = $permission->delete();
+        if ($result) {
+            return response()->json(['status' => 'SUCCESS']);
+        }
     }
 }

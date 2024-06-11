@@ -1,5 +1,5 @@
 <?php
-namespace modules\Permissions\src\Http\Middlewares;
+namespace Modules\Permissions\src\Http\Middlewares;
 
 use Closure;
 use Illuminate\Http\Request;

@@ -1,6 +1,8 @@
 <?php
 
+use Modules\User\src\Models\Admin;
 use Modules\User\src\Models\User;
+
 
 return [
 
@@ -16,8 +18,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'admin',
+        'passwords' => 'admins',
     ],
 
     /*
@@ -42,11 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
-        // 'admin' => [
-        //     'driver' => 'session',
-        //     'provider' => 'users',
-        // ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -72,6 +73,11 @@ return [
             'model' => User::class,
         ],
 
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => Admin::class,
+        ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -92,10 +98,9 @@ return [
     | they have less time to be guessed. You may change this as needed.
     |
     */
-
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'admins' => [
+            'provider' => 'admins',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
