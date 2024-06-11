@@ -44,11 +44,12 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // $user = User::create([
+        //     'name' => $request->name,
+        //     'email' => $request->email,
+        //     'password' => Hash::make($request->password),
+        // ]);
+        $user = User::create($request->except('token'));
         if ($user) {
             $roles = [];
             if (!empty($request['roles'])) {
@@ -65,20 +66,20 @@ class UserController extends Controller
     public function update(UserRequest $request, $id)
     {
         $user = User::find($id);
-
-
-        $validated = $request->validated();
-
         $user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => $request['password'] ? Hash::make($request['password']) : $user->password,
         ]);
         if ($user) {
-            return response()->json([
-                'status' => 'SUCCESS',
-                'data' => $user,
-            ], 200);
+            $roles = [];
+            if (!empty($request['roles'])) {
+                $roles = Role::whereIn('id', $request['roles'])->pluck('name')->toArray();
+            }
+            if (count($roles) > 0) {
+                $user->syncRoles($roles);
+            }   
+            return response()->json(['status' => 'SUCCESS', 'user' => $user]);
         }
         return response()->json(['status' => 'RESOURCE_NOT_FOUND']);
     }
