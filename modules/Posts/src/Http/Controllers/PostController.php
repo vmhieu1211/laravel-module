@@ -95,8 +95,9 @@ class PostController extends Controller
                     File::delete(storage_path("app/public/$oldImages"));
                 }
             }
-            return response()->json(['status' => 'SUCCESS', '']);
+            return response()->json(['status' => 'SUCCESS', 'post' => $post]);
         }
+        return response()->json(['status' => 'RESOURCE_NOT_FOUND'], 200);
     }
 
     public function destroy($id)
