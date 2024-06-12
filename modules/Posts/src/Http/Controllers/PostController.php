@@ -2,6 +2,7 @@
 
 namespace Modules\Posts\src\Http\Controllers;
 
+use Modules\Like\src\Models\Like;
 use Modules\Posts\src\Models\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +29,7 @@ class PostController extends Controller
     }
     public function show($id)
     {
+
         $post = Post::find($id);
         return response()->json([
             'status' => 'Success',
@@ -37,71 +39,64 @@ class PostController extends Controller
 
     public function store(PostRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $user = Auth::user();
-        $post = new Post([
-            'title' => $request->title,
-            'content' => $request->content,
-            'published_at' => $request->published_at,
-            'status' => $request->status,
-        ]);
-        // $post->author = $user->id;
-
-        $path = 'storage/uploads/';
-        if ($request->hasfile('images')) {
-            $file = $request->file('images');
-            $extenstion = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extenstion;
-            $file->move($path, $filename);
-            $post->images = $path . $filename;
+        $data = $request->except('token');
+        if (!empty($request->images)) {
+            $data['images'] = 'uploads/' . $request['images'];
         }
-        $post->save();
+
+        $post = Post::create($data);
         if ($post) {
-            return response()->json(['status' => 'Create Post Success', 'post' => $post]);
+            $path = storage_path('app/public/uploads');
+            if (!File::exists($path)) {
+                File::makeDirectory($path, $mode = 0777, true, true);
+            }
+            if (!empty($request->images)) {
+                $tempPath = 'tmp/' . $request->images;
+                $newPath = 'uploads/' . $request->images;
+                if (File::exists(storage_path("app/public/$tempPath"))) {
+                    File::move(storage_path("app/public/$tempPath"), storage_path("app/public/$newPath"));
+                }
+            }
+            return response()->json(['status' => 'SUCCESS', 'post' => $post], 200);
         }
-        return response()->json(['status' => 'Create Post Failure']);
+        return response()->json(['status' => 'RESOURCE_NOT_FOUND'], 200);
     }
 
     public function update(PostRequest $request, $id)
     {
-        // $request->validate(
-        //     [
-        //         'title' => 'required',
-        //         'content' => 'required',
-        //         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-        //     ]
-        // );
+        $data = $request->except('token');
+        $post = Post::find($id);
+        $oldImages = $post->images;
+        if (!empty($request->images)) {
+            $data['images'] = 'uploads/' . $request['images'];
+        }
+        if (!$post) {
+            return response()->json(['status' => 'RESOURCE_NOT_FOUND'], 200);
+        }
+        $result = $post->update($data);
+        if ($result) {
+            $path = storage_path('app/public/uploads');
 
-        $post = Post::findOrFail($id);
-
-        $post->title = $request->title;
-        $post->content = $request->content;
-        $post->status = $request->status;
-
-        if ($request->has('images')) {
-            $file = $request->file('images');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $path = 'storage/uploads/';
-            $file->move($path, $filename);
-            if (File::exists($post->images)) {
-                File::delete($post->images);
+            if (!File::exists($path)) {
+                File::makeDirectory($path, $mode = 0777, true, true);
             }
+
+            $newImages = "";
+            if (!empty($request->images)) {
+                $tempPath = 'tmp/' . $request->images;
+                $newImages = 'uploads/' . $request->images;
+                if (File::exists(storage_path("app/public/$tempPath"))) {
+                    File::move(storage_path("app/public/$tempPath"), storage_path("app/public/$newImages"));
+                }
+            }
+
+            if (!empty($oldImages) && $oldImages != $newImages) {
+                if (File::exists(storage_path("app/public/$oldImages"))) {
+                    File::delete(storage_path("app/public/$oldImages"));
+                }
+            }
+            return response()->json(['status' => 'SUCCESS', '']);
         }
-        $post->images = $path . $filename;
-        $post->save();
-        if ($post) {
-            return response()->json([
-                'status' => 'Post User Success',
-                'data' => $post,
-            ], 200);
-        }
-        return response()->json(['status' => 'Update Post Failure']);
     }
 
     public function destroy($id)
@@ -113,5 +108,38 @@ class PostController extends Controller
             ], 200);
         }
         return response()->json(['status' => 'User Not Found']);
+    }
+
+    public function like($id)
+    {
+        $user = auth()->user();
+        $post = Post::findOrFail($id);
+        $like = new Like([
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+        ]);
+        $like->save();
+
+        return response()->json([
+            'status' => 'Like Post Success',
+            'data' => $like,
+        ], 200);
+    }
+
+
+    public function unlike($id)
+    {
+        $user = Auth::user();
+        $like = Like::where('post_id', $id)->where('user_id', $user->id)->first();
+        if ($like) {
+            $like->delete();
+            return response()->json([
+                'status' => 'Unlike Post Success',
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => 'Like Not Found',
+        ], 404);
     }
 }

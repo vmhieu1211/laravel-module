@@ -6,7 +6,7 @@ use Modules\Roles\src\Http\Controllers\RoleController;
 
 Route::group(
     [
-        // 'middleware' => 'auth:sanctum',
+        'middleware' => 'auth:sanctum',
         'prefix' => 'api',
         'name' => 'roles.'
     ],

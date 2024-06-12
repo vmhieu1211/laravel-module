@@ -5,7 +5,7 @@ use Modules\Permissions\src\Http\Controllers\PermissionController;
 
 Route::group(
     [
-        // 'middleware' => 'auth:sanctum',
+        'middleware' => 'auth:sanctum',
         'prefix' => 'api',
         'name' => 'permissions.'
     ],

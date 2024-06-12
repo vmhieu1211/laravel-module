@@ -6,7 +6,7 @@ use Modules\User\src\Http\Controllers\UserController;
 
 Route::group(
     [
-        // 'middleware' => 'auth:sanctum',
+        'middleware' => 'auth:sanctum',
         'prefix' => 'api',
         'name' => 'users.'
     ],

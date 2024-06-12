@@ -19,22 +19,31 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            // $user = Auth::user()
-            return response()->json([
-                'email' => 'Login Success'
-            ]);
+            $user = Auth::user();
+            $token = $user->createToken('auth_token')->plainTextToken;
+            $response = [
+                'code' => "SUCCESS",
+                'token' => $token,
+            ];
+            return response()->json($response);
         } else {
             return response()->json([
                 'email' => 'Email or password not correct'
             ]);
         }
     }
-
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('login');
+        if (method_exists(auth()->user()->currentAccessToken(), 'delete')) {
+            auth()->user()->currentAccessToken()->delete();
+        }
+
+        $request->user()->tokens->each(function ($token) {
+            $token->delete();
+        });
+
+        auth()->guard('web')->logout();
+
+        return response()->json(['status' => 'Logout Success']);
     }
 }
