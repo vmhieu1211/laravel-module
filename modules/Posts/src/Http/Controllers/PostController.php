@@ -11,12 +11,12 @@ use Modules\Posts\src\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
-    // function __construct()
-    // {
-    //     $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index', 'store']]);
-    //     $this->middleware('permission:post-create', ['only' => ['create', 'store']]);
-    //     $this->middleware('permission:post-edit', ['only' => ['edit', 'update']]);
-    // }
+    function __construct()
+    {   
+        $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index', 'store']]);
+        $this->middleware('permission:post-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:post-edit', ['only' => ['edit', 'update']]);
+    }
 
     public function index()
     {
