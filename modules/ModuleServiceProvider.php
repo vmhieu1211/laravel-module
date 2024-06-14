@@ -71,27 +71,6 @@ class ModuleServiceProvider extends ServiceProvider
         //khai bao commands
         $this->registerCommand();
 
-        //biding user
-        // $this->app->singleton(
-        //     UserServiceInterface::class,
-        //     UserService::class,
-        // );
-
-        // $this->app->singleton(
-        //     UserRepositoryInterface::class,
-        //     UserRepository::class,
-        // );
-
-        //biding role
-        // $this->app->singleton(
-        //     RoleServiceInterface::class,
-        //     RoleService::class,
-        // );
-
-        // $this->app->singleton(
-        //     RoleRepositoryInterface::class,
-        //     RoleRepository::class,
-        // );
     }
 
     //khai bao module
