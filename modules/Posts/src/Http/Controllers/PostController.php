@@ -13,14 +13,13 @@ class PostController extends Controller
 {
     function __construct()
     {   
-        $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index', 'store']]);
-        $this->middleware('permission:post-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:post-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('role:Super Admin', ['only' => ['index', 'store', 'update', 'destroy']]);
+        $this->middleware('role:Writer',['only'=>'create','update']);
     }
 
     public function index()
     {
-        $posts = Post::withCount('likes')->paginate(5);
+        $posts = Post::withCount('likes')->paginate(10);
 
         return response()->json([
             'status' => 'Success',

@@ -2,9 +2,10 @@
 
 namespace Modules\Auth\src\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\User\src\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Modules\Auth\src\Http\Requests\AuthRequest;
 
 class AuthController extends Controller
@@ -46,4 +47,17 @@ class AuthController extends Controller
 
         return response()->json(['status' => 'Logout Success']);
     }
+
+    // public function checkToken(Request $request)
+    // {
+    //     $token = $request->token;
+    //     if (!empty($token)) {
+    //         $user = User::where('api_token', $token)->first();
+    //         if (!empty($user)) {
+    //             return response()->json(['status' => 'Success', $user->email],200);
+    //         }
+    //     }
+
+    //     return response()->json(['status' => 'BAD_REQUEST', 'Yêu cầu đã hết hiệu lực'],400);
+    // }
 }
