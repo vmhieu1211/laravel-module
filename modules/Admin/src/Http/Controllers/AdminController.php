@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\User\src\Http\Controllers;
+namespace Modules\Admin\src\Http\Controllers;
 
-use Modules\User\src\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Modules\User\src\Http\Requests\UserRequest;
+use Modules\Admin\src\Http\Requests\AdminRequest;
+use Modules\Admin\src\Models\Admin;
 
-class UserController extends Controller
+class AdminController extends Controller
 {
     function __construct()
     {
@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('roles.permissions')->paginate(5);
+        $users = Admin::with('roles.permissions')->paginate(5);
         return response()->json([
             'status' => 'SUCCESS',
             'data' => $users,
@@ -26,7 +26,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::with('roles.permissions')->find($id);
+        $user = Admin::with('roles.permissions')->find($id);
         if ($user) {
             return response()->json([
                 'status' => 'SUCCESS',
@@ -36,9 +36,9 @@ class UserController extends Controller
         return response()->json(['status' => "RESOURCE_NOT_FOUND"]);
     }
 
-    public function store(UserRequest $request)
+    public function store(AdminRequest $request)
     {
-        $user = User::create([
+        $user = Admin::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -56,9 +56,9 @@ class UserController extends Controller
         return response()->json(['status' => 'RESOURCE_NOT_FOUND']);
     }
 
-    public function update(UserRequest $request, $id)
+    public function update(AdminRequest $request, $id)
     {
-        $user = User::with('roles')->find($id);
+        $user = Admin::with('roles')->find($id);
         $user->update([
             'name' => $request['name'],
             'email' => $request['email'],
@@ -79,7 +79,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
+        $user = Admin::find($id);
         if (!$user) {
             return response()->json([
                 'status' => 'RESOURCE_NOT_FOUND',

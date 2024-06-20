@@ -19,20 +19,29 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
-            $response = [
-                'code' => "SUCCESS",
-                'token' => $token,
-            ];
-            return response()->json($response);
-        } else {
+        if (Auth::guard('web')->attempt($credentials)) {
+            $user = Auth::guard('web')->user();
+            $token = $user->createToken('auth_token_web')->plainTextToken;
             return response()->json([
-                'email' => 'Email or password not correct'
+                'code' => 'SUCCESS',
+                'token' => $token,
+                'guard' => 'web',
             ]);
         }
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $user = Auth::guard('admin')->user();
+            $token = $user->createToken('auth_token_admin')->plainTextToken;
+            return response()->json([
+                'code' => 'SUCCESS',
+                'token' => $token,
+                'guard' => 'admin',
+            ]);
+        }
+        return response()->json([
+            'error' => 'Email or password not correct'
+        ], 401);
     }
+
     public function logout(Request $request)
     {
         if (method_exists(auth()->user()->currentAccessToken(), 'delete')) {
@@ -47,6 +56,7 @@ class AuthController extends Controller
 
         return response()->json(['status' => 'Logout Success']);
     }
+
 
     // public function checkToken(Request $request)
     // {

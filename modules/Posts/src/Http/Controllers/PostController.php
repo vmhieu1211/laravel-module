@@ -12,9 +12,9 @@ use Modules\Posts\src\Http\Requests\PostRequest;
 class PostController extends Controller
 {
     function __construct()
-    {   
+    {
         $this->middleware('role:Super Admin', ['only' => ['index', 'store', 'update', 'destroy']]);
-        $this->middleware('role:Writer',['only'=>'create','update']);
+        $this->middleware('role:Writer', ['only' => 'create', 'update']);
     }
 
     public function index()
@@ -26,10 +26,10 @@ class PostController extends Controller
             'data' => $posts,
         ], 200);
     }
-    
-    public function show($id)
+
+    public function show($slug)
     {
-        $post = Post::withCount('likes')->find($id);
+        $post = Post::where('slug', $slug)->first();
         return response()->json([
             'status' => 'Success',
             'data' => $post,

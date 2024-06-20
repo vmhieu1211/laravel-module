@@ -1,7 +1,7 @@
 <?php
 
-use Modules\User\src\Models\Admin;
 use Modules\User\src\Models\User;
+use Modules\Admin\src\Models\Admin;
 
 
 return [
@@ -75,7 +75,7 @@ return [
 
         'admins' => [
             'driver' => 'eloquent',
-            'model' => User::class,
+            'model' => Admin::class,
         ],
 
         // 'users' => [

@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasRoles, HasApiTokens, HasFactory, Notifiable;
-    public $guard = "admin";
+    public $guard = "web";
     protected $fillable = [
         'name',
         'email',
