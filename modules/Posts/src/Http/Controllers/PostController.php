@@ -20,7 +20,6 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::withCount('likes')->paginate(10);
-
         return response()->json([
             'status' => 'Success',
             'data' => $posts,

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 12, 2024 lúc 11:21 AM
+-- Thời gian đã tạo: Th6 20, 2024 lúc 10:29 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 7.4.1
 
@@ -20,6 +20,30 @@ SET time_zone = "+00:00";
 --
 -- Cơ sở dữ liệu: `be`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `admins`
+--
+
+INSERT INTO `admins` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Admin', 'admin@gmail.com', NULL, '$2y$10$8OyCU72FuEhlD.oYMiA/i..Ny5fkyIoD37e3lOAS7UWvZ1RlFrmBi', NULL, '2024-06-20 02:54:26', '2024-06-20 02:54:26');
 
 -- --------------------------------------------------------
 
@@ -123,12 +147,11 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 (2, 'App\\Models\\User', 4),
 (2, 'Modules\\User\\src\\Models\\User', 25),
 (2, 'Modules\\User\\src\\Models\\User', 32),
+(3, 'Modules\\Admin\\src\\Models\\Admin', 1),
 (3, 'Modules\\User\\src\\Models\\User', 26),
 (3, 'Modules\\User\\src\\Models\\User', 40),
 (3, 'Modules\\User\\src\\Models\\User', 41),
-(3, 'Modules\\User\\src\\Models\\User', 42),
-(7, 'Modules\\User\\src\\Models\\User', 27),
-(7, 'Modules\\User\\src\\Models\\User', 49);
+(3, 'Modules\\User\\src\\Models\\User', 42);
 
 -- --------------------------------------------------------
 
@@ -162,9 +185,9 @@ CREATE TABLE `permissions` (
 
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
 (5, 'permission-edit', 'admin', '2024-04-11 19:35:02', '2024-04-11 19:35:02'),
-(7, 'user-update', 'admin', '2024-04-22 20:07:29', '2024-04-22 20:20:09'),
+(7, 'user-edit', 'admin', '2024-04-22 20:07:29', '2024-04-22 20:20:09'),
 (8, 'user-create', 'admin', '2024-04-22 20:07:44', '2024-04-22 20:07:52'),
-(9, 'user-edit', 'admin', '2024-04-22 20:08:02', '2024-04-22 20:08:02'),
+(9, 'user-list', 'admin', '2024-04-22 20:08:02', '2024-04-22 20:08:02'),
 (10, 'user-delete', 'admin', '2024-04-22 20:08:13', '2024-04-22 20:08:13'),
 (11, 'permission-list', 'admin', '2024-04-22 20:08:26', '2024-04-22 20:08:26'),
 (13, 'permission-delete', 'admin', '2024-04-23 21:25:28', '2024-04-23 21:25:28'),
@@ -200,8 +223,16 @@ CREATE TABLE `personal_access_tokens` (
 --
 
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `created_at`, `updated_at`) VALUES
-(2, 'Modules\\User\\src\\Models\\User', 26, 'auth_token', '8fbfde55edc4ad2efc954f917517b71a1b41d03a313ebb6ac5fc1067f999456c', '[\"*\"]', '2024-06-11 19:49:11', '2024-06-11 19:32:44', '2024-06-11 19:49:11'),
-(3, 'Modules\\User\\src\\Models\\User', 27, 'auth_token', '87cc0fc406f780b0df7cc99c2001b6353e429afc05da7ba5fb0316746eddab8f', '[\"*\"]', '2024-06-12 02:18:34', '2024-06-11 19:58:59', '2024-06-12 02:18:34');
+(3, 'Modules\\User\\src\\Models\\User', 27, 'auth_token', '87cc0fc406f780b0df7cc99c2001b6353e429afc05da7ba5fb0316746eddab8f', '[\"*\"]', '2024-06-13 01:08:01', '2024-06-11 19:58:59', '2024-06-13 01:08:01'),
+(5, 'Modules\\User\\src\\Models\\User', 25, 'auth_token', '8de370ee70bd581c5ba0d86f33e4d9097199d178abc1726e067a3eb1dfb44207', '[\"*\"]', '2024-06-19 21:32:46', '2024-06-14 02:43:55', '2024-06-19 21:32:46'),
+(7, 'Modules\\User\\src\\Models\\User', 26, 'auth_token', '9489d861e130ea0c7551ce5a6bbd81ccb8627e6b9c591f2b82af7e169c2d9ef4', '[\"*\"]', '2024-06-19 19:37:31', '2024-06-17 01:18:02', '2024-06-19 19:37:31'),
+(8, 'Modules\\Admin\\src\\Models\\Admin', 1, 'auth_token', '6144612b1575a7e32c5f8231d023d47c49c45a92a1529201c8c62bf348ef407e', '[\"*\"]', '2024-06-20 00:38:10', '2024-06-19 20:01:41', '2024-06-20 00:38:10'),
+(9, 'Modules\\User\\src\\Models\\Admin', 1, 'auth_token', '14556a1ec0518c692832a403639be2d790e51db45eb0aa2534effe23faf118e0', '[\"*\"]', NULL, '2024-06-19 20:12:24', '2024-06-19 20:12:24'),
+(10, 'Modules\\User\\src\\Models\\Admin', 1, 'auth_token', '3f8420d3e94f055e33e2b002f5728fd5896430e2fd56f3c55ed3b04eb5f20ab9', '[\"*\"]', NULL, '2024-06-19 20:19:21', '2024-06-19 20:19:21'),
+(11, 'Modules\\User\\src\\Models\\User', 25, 'auth_token_web', '803173f6d3f74ba31c18a6c205343fa50e81cb4bc026fde7184dcbeb95b29578', '[\"*\"]', NULL, '2024-06-19 20:22:20', '2024-06-19 20:22:20'),
+(12, 'Modules\\User\\src\\Models\\User', 26, 'auth_token_web', '8cfd01f9e2d269ce6a1d86f2f1ec7f9246aad56cff4ef7fb25e0525f9ecf4c66', '[\"*\"]', NULL, '2024-06-19 20:22:44', '2024-06-19 20:22:44'),
+(13, 'Modules\\User\\src\\Models\\Admin', 1, 'auth_token_admin', '95884c5fdfc547ecb17060d3b9f4744e16e65dc3e51e0c31f59e44c99292677e', '[\"*\"]', NULL, '2024-06-19 20:23:56', '2024-06-19 20:23:56'),
+(14, 'Modules\\User\\src\\Models\\User', 27, 'auth_token_web', '6cd7a5decde4a40c2ca2ca485c5f1fe7053feb7152010a6d925d6608a3013b8b', '[\"*\"]', NULL, '2024-06-19 21:21:40', '2024-06-19 21:21:40');
 
 -- --------------------------------------------------------
 
@@ -218,18 +249,22 @@ CREATE TABLE `posts` (
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `status` smallint(6) NOT NULL DEFAULT 0
+  `status` smallint(6) NOT NULL DEFAULT 0,
+  `slug` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `posts`
 --
 
-INSERT INTO `posts` (`id`, `title`, `content`, `images`, `author`, `published_at`, `created_at`, `updated_at`, `status`) VALUES
-(36, 'adf', 'asdfasdf', 'storage/uploads/1714964706.png', 26, '2024-05-06 00:00:00', '2024-05-01 15:01:26', '2024-05-05 13:05:06', 0),
-(43, 'abc', '41234', 'storage/uploads/1714966117.png', 26, '2024-05-06 00:00:00', '2024-05-01 17:45:40', '2024-05-05 13:28:37', 1),
-(44, '123123', 'AAAAA', NULL, 27, NULL, '2024-06-12 01:07:27', '2024-06-12 01:07:27', 0),
-(61, '123123', '123413', 'uploads/132.png', NULL, '2023-06-12 00:00:00', '2024-06-12 01:25:59', '2024-06-12 01:44:26', 0);
+INSERT INTO `posts` (`id`, `title`, `content`, `images`, `author`, `published_at`, `created_at`, `updated_at`, `status`, `slug`) VALUES
+(36, 'adf', 'asdfasdf', 'storage/uploads/1714964706.png', 27, '2024-05-06 00:00:00', '2024-05-01 15:01:26', '2024-05-05 13:05:06', 0, ''),
+(43, 'abc', '41234', 'storage/uploads/1714966117.png', 27, '2024-05-06 00:00:00', '2024-05-01 17:45:40', '2024-05-05 13:28:37', 1, ''),
+(44, '123123', 'AAAAA', NULL, 27, NULL, '2024-06-12 01:07:27', '2024-06-12 01:07:27', 0, ''),
+(61, '123123', '123413', 'uploads/132.png', NULL, '2023-06-12 00:00:00', '2024-06-12 01:25:59', '2024-06-12 01:44:26', 0, ''),
+(62, 'aaa', '123123', NULL, NULL, NULL, '2024-06-20 00:37:33', '2024-06-20 00:37:33', 0, ''),
+(63, 'aaa12341234', '123123', NULL, NULL, NULL, '2024-06-20 00:37:37', '2024-06-20 00:37:37', 0, ''),
+(64, 'vu minh hieu', '123123', NULL, NULL, NULL, '2024-06-20 00:37:45', '2024-06-20 00:37:45', 0, '');
 
 -- --------------------------------------------------------
 
@@ -250,7 +285,7 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(2, 'Writer', 'admin', NULL, NULL),
+(2, 'Writer', 'admin', '2024-06-20 03:04:56', '2024-06-20 03:04:56'),
 (3, 'Super Admin', 'admin', '2024-04-12 14:49:41', '2024-04-15 12:58:52'),
 (7, 'User', 'admin', '2024-05-03 02:03:29', '2024-05-03 02:03:29');
 
@@ -310,13 +345,19 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(25, 'Writer', 'writer@gmail.com', NULL, '$2y$10$/xsERNeKJi1fESeRYPhX8eCgNK9l8Kbxqdxbz0Ou2KsSFw2bzKqmC', NULL, '2024-04-23 20:30:26', '2024-04-26 03:07:49'),
-(26, 'Admin', 'admin@gmail.com', NULL, '$2y$10$8OyCU72FuEhlD.oYMiA/i..Ny5fkyIoD37e3lOAS7UWvZ1RlFrmBi', NULL, '2024-04-24 01:05:29', '2024-06-10 21:06:06'),
+(25, 'Writer', 'writer@gmail.com', NULL, '$2y$10$W4zONIRD7o9uCwCszqsIUOywV/MNfDT8Oz1J5oYKV4C2MIGsl95WK', NULL, '2024-04-23 20:30:26', '2024-06-19 21:34:40'),
 (27, 'User', 'user@gmail.com', NULL, '$2y$10$2bzP3Ngik2uxst7.T51wBuffQ/RZ9DV9CHB5nRH04aKD2CkLHFoUm', NULL, '2024-05-03 02:10:34', '2024-05-03 02:10:34');
 
 --
 -- Chỉ mục cho các bảng đã đổ
 --
+
+--
+-- Chỉ mục cho bảng `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `admins_email_unique` (`email`);
 
 --
 -- Chỉ mục cho bảng `failed_jobs`
@@ -407,6 +448,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT cho bảng `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT cho bảng `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -422,7 +469,7 @@ ALTER TABLE `likes`
 -- AUTO_INCREMENT cho bảng `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT cho bảng `permissions`
@@ -434,13 +481,13 @@ ALTER TABLE `permissions`
 -- AUTO_INCREMENT cho bảng `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT cho bảng `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT cho bảng `roles`
